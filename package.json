@@ -1,0 +1,17 @@
+{
+  "name": "taixiu-api",
+  "version": "1.0.0",
+  "description": "API Tài Xỉu lấy dữ liệu từ Firebase",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "20.x"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
+  }
+}
