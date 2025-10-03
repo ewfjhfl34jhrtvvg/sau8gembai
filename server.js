@@ -1,20 +1,21 @@
-import fetch from "node-fetch";
 import express from "express";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// URL Firebase Realtime Database
 const url = "https://app-tai-xiu-default-rtdb.firebaseio.com/taixiu_sessions.json";
 
 let latestPhien = null;
 
+// Hàm lấy phiên mới nhất từ Firebase
 async function getLatestSession() {
   try {
-    const res = await fetch(url);
+    const res = await fetch(url); // Node 18+ có fetch sẵn
     const data = await res.json();
 
     if (data) {
-      // Lọc bỏ những record không có "Phien"
+      // Lọc các record có Phien
       const sessions = Object.values(data).filter(x => x.Phien !== undefined);
 
       if (sessions.length > 0) {
@@ -29,8 +30,8 @@ async function getLatestSession() {
           // Tính tổng xúc xắc
           const sum = latestSession.xuc_xac_1 + latestSession.xuc_xac_2 + latestSession.xuc_xac_3;
 
-          // Tính dự đoán (giả sử bạn đã có logic dự đoán ở đâu đó)
-          const duDoan = sum >= 11 ? "Tài" : "Xỉu"; // ví dụ dự đoán đơn giản
+          // Dự đoán đơn giản Tài/Xỉu
+          const duDoan = sum >= 11 ? "Tài" : "Xỉu";
 
           return {
             id: "ĐỘC QUYỀN CỦA @cha tao",
@@ -46,7 +47,7 @@ async function getLatestSession() {
       }
     }
   } catch (err) {
-    console.error("Lỗi:", err.message);
+    console.error("Lỗi khi fetch Firebase:", err.message);
   }
   return null;
 }
@@ -61,7 +62,7 @@ app.get("/api/68/taixiu", async (req, res) => {
   }
 });
 
-// Kiểm tra mỗi 3 giây để update latestPhien
+// Kiểm tra mỗi 3 giây để cập nhật latestPhien
 setInterval(getLatestSession, 3000);
 
 app.listen(PORT, () => {
